@@ -19,7 +19,7 @@ Taski ist eine einfache Aufgabenverwaltungsanwendung, entwickelt mit Laravel. Si
 Führen Sie die folgenden Schritte aus, um Taski einzurichten:
 
 1. Klonen Sie das Repository:
-git clone https://github.com/IhrBenutzername/Taski.git
+git clone https://github.com/bellikal/taski.git
 
 2. Wechseln Sie in das Projektverzeichnis:
 cd Taski
@@ -83,7 +83,7 @@ Taski is a simple task management application developed with Laravel. It allows 
 Follow these steps to set up Taski:
 
 1. Clone the repository:
-git clone https://github.com/YourUsername/Taski.git
+git clone https://github.com/bellikal/taski.git
 
 2. Change into the project directory:
 cd Taski
