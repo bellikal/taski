@@ -1,0 +1,34 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Proxima Nova', Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 200px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link.active {
+    font-weight: bold;
+}
+
+.status {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#delete-task-form {
+    display: none;
+}
+
+.fa-floppy-disk {
+    font-size: 1.2rem;
+}
