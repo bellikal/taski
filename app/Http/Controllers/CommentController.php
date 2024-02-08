@@ -26,24 +26,40 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
         // Validate inputs
-        $request->validate([
+        $validatedData = $request->validate([
             'task_id' => 'required|exists:tasks,id', // Ensure the task ID exists
             'content' => 'required|string', // Ensure content is present and is a string
         ]);
-
+    
         // Create and save a new comment
         $comment = new Comment();
-        $comment->task_id = $request->task_id;
+        $comment->task_id = $validatedData['task_id'];
         $comment->user_id = auth()->id(); // Assign the ID of the authenticated user
-        $comment->content = $request->content;
+        $comment->content = $validatedData['content'];
         $comment->save();
-
-        // Redirect the user back
+    
+        // Load the user relationship to get the name of the user for the comment
+        $comment->load('user');
+    
+        // If it's an AJAX request, return a JSON response
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'commentId' => $comment->id,
+                'commentContent' => $comment->content,
+                'userName' => $comment->user->name, // Assuming there's a 'name' field in your User model
+                'createdAt' => $comment->created_at->format('d.m.Y H:i'), // Formatting the creation date
+            ]);
+        }
+    
+        // If not an AJAX request, redirect back or to a default route
         return back();
     }
+    
 
     /**
      * Display the specified resource.

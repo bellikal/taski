@@ -9,11 +9,11 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
                 <h2>{{ $task->title }}</h2>
-                <!-- Erstellungsdatum des Tasks -->
+                <!-- Task creation date -->
                 <small class="text-muted">Created on {{ $task->created_at->format('Y-m-d - H:i') }}</small>
             </div>
             <div>
-                {{-- Priorität als farbiges Label --}}
+                {{-- Priority as a colored label --}}
                 @php
                     $priorityColor = match($task->priority) {
                         'low' => 'bg-info',
@@ -23,16 +23,16 @@
                     };
                 @endphp
                 <span class="badge {{ $priorityColor }}">{{ ucfirst($task->priority) }}</span>
-                {{-- Kategorie --}}
+                {{-- Category --}}
                 <span class="badge bg-dark">{{ $task->category->name ?? 'No Category' }}</span>
                 {{-- Status --}}
                 <span class="badge bg-dark">{{ ucfirst($task->status) }}</span>
             </div>
         </div>
         <div class="card-body text-dark">
-            <!-- Beschreibung des Tasks -->
+            <!-- Task description -->
             <p class="card-text">{{ $task->description }}</p>
-            <!-- Fälligkeitsdatum des Tasks -->
+            <!-- Task due date -->
             <div class="mb-3">
                 <div class="">
                     <strong><span>Due Date: </span></strong>
@@ -54,15 +54,13 @@
                         <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
                     </form>
                 </div>
-            @else
             @endif
         </div>
-        
     </div>
 
     <div class="container mt-4">
         <div class="row">
-            <!-- Kommentarsektion -->
+            <!-- Comment section -->
             <div class="col-md-5">
                 <h3>Comments</h3>
                 @if ($task->comments->isEmpty())
@@ -79,11 +77,11 @@
                 @endif
             </div>
     
-            <!-- Kommentarformular -->
+            <!-- Comment form -->
             @if(auth()->check())
             <div class="col-md-5">
                 <h3>Add a Comment</h3>
-                <form action="{{ route('comments.store') }}" method="POST">
+                <form id="commentForm" action="{{ route('comments.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                     <div class="form-group">
@@ -97,5 +95,40 @@
     </div>
     
 </div>
+
+<script>
+    document.getElementById('commentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevents the normal sending of the form
+
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': formData.get('_token')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // Create the markup for the new comment
+                var newComment = '<div class="list-group-item">' +
+                                '<strong>' + data.userName + '</strong> (' + data.createdAt + '):' +
+                                '<p>' + data.commentContent + '</p>' +
+                                '</div>';
+
+                // Add the new comment at the top of the comment list
+                document.querySelector('.list-group').insertAdjacentHTML('afterbegin', newComment);
+
+                // Reset the form
+                document.getElementById('commentForm').reset();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+    
 
 @endsection
